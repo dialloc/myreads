@@ -1,6 +1,7 @@
 import React from 'react'
 // import * as BooksAPI from './BooksAPI'
 import './App.css'
+import { Route } from 'react-router-dom';
 import ListBooks from './ListBooks';
 import SearchBooks from './SearchBooks';
 
@@ -13,11 +14,16 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <SearchBooks />
-        ) : (
+        <Route exact path='/' render={() => (
           <ListBooks />
-        )}
+        )}/>
+        <Route exact path='/search' render={({ history }) => (
+          <SearchBooks
+            onSearch={() => {
+              history.push('/')
+            }}
+          />
+        )}/>
       </div>
     )
   }

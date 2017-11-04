@@ -1,5 +1,6 @@
 import React , {Component} from 'react';
 import BookShelf from './BookShelf';
+import { Link } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
 
 
@@ -15,11 +16,14 @@ class ListBooks extends Component {
       })
     }
     moveBook = (book,shelf) => {
-      BooksAPI.update(book,shelf);
-
-      BooksAPI.getAll().then((books) => {
-        this.setState({books});
-      })
+      if(shelf !== 'none'){
+        BooksAPI.update(book,shelf);
+      //  const listBooks=this.state.books;
+      //  listBooks.filter((b) => b.id === book.id).map((b)=>b.shelf=shelf);
+        BooksAPI.getAll().then((books) => {
+          this.setState({books});
+        });
+      }
     }
   render(){
     return (
@@ -28,12 +32,12 @@ class ListBooks extends Component {
           <h1>MyReads</h1>
         </div>
         <div className="list-books-content">
-          <BookShelf title="Want to Read" shelf="wantToRead" books={this.state.books} onMoveBook={this.moveBook}/>
           <BookShelf title="Currently Reading" shelf="currentlyReading" books={this.state.books} onMoveBook={this.moveBook}/>
+          <BookShelf title="Want to Read" shelf="wantToRead" books={this.state.books} onMoveBook={this.moveBook}/>
           <BookShelf title="Read" shelf="read" books={this.state.books} onMoveBook={this.moveBook}/>
         </div>
         <div className="open-search">
-          <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+        <Link to='/search' onClick={() => this.setState({ showSearchPage: true })}>Add a book</Link>
         </div>
       </div>
     )
