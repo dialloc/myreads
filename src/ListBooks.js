@@ -18,11 +18,14 @@ class ListBooks extends Component {
     moveBook = (book,shelf) => {
       if(shelf !== 'none'){
         BooksAPI.update(book,shelf);
-      //  const listBooks=this.state.books;
-      //  listBooks.filter((b) => b.id === book.id).map((b)=>b.shelf=shelf);
-        BooksAPI.getAll().then((books) => {
-          this.setState({books});
-        });
+       let listBooks=this.state.books.reduce((res,b)=>{
+         if(b.id === book.id){
+           b.shelf=shelf;
+         }
+         res.push(b);
+         return res;
+       },[]);
+        this.setState({listBooks});
       }
     }
   render(){

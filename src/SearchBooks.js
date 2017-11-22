@@ -7,8 +7,19 @@ import * as BooksAPI from './BooksAPI';
 class SearchBooks extends Component{
   state = {
     query: '',
-    searchResult: []
+    searchResult: [],
+    bookShelves: []
   }
+
+  componentDidMount() {
+      BooksAPI.getAll().then((books) => {
+      let   bookShelves =books.reduce((shelves,book) =>{
+        shelves[book.id]=book.shelf;
+        return shelves;
+      },{});
+      this.setState({bookShelves:bookShelves});
+      })
+    }
 
   updateQuery = (query) => {
     const q=query.trim();
@@ -16,7 +27,17 @@ class SearchBooks extends Component{
       this.setState({ query: query.trim()});
       BooksAPI.search(q,1000).then((books) => {
         if(books){
-          this.setState({searchResult: books});
+          let bookResults=books.reduce((res,b)=> {
+            let shelf=this.state.bookShelves[b.id];
+            if(shelf){
+              b.shelf=shelf;
+            }else{
+              b.shelf='none';
+            }
+            res.push(b);
+            return res;
+          },[]);
+          this.setState({searchResult: bookResults});
         }else{
           this.setState({ searchResult: []});
         }
